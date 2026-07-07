@@ -1,4 +1,4 @@
 export const config = {
-  base_api: import.meta.env.BASE_API,
+  vite_base_api: import.meta.env.VITE_BASE_API,
   
 };
