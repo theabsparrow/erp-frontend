@@ -1,6 +1,6 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { AuthProvider } from "@/provider/AuthProvider";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/routes/ProtectedRoute";
 import Layout from "../layouts/Layout";
 import NotFound from "../pages/notFound/NotFound";
 import LoginPage from "../pages/login/LoginPage";

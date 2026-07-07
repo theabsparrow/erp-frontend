@@ -1,3 +1,5 @@
+import { RolesComponent } from "@/components/roles/RolesComponent";
+
 export default function RolesPage() {
-  return <h1>Roles</h1>;
+  return <RolesComponent />;
 }
