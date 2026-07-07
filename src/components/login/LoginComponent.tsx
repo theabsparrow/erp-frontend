@@ -127,8 +127,8 @@ const LoginComponent = () => {
             disabled={isSubmitting}
             onClick={() =>
               handleAdmin({
-                email: "teamleader@demo.com",
-                password: "Password@123",
+                email: "manager@gmail.com",
+                password: "Manager@123",
               })
             }
             className="text-xs font-medium py-2 rounded-full flex items-center justify-center text-[#C3C0D8] border border-[#2C293D] gap-2 cursor-pointer hover:bg-white/5 transition-colors"
@@ -140,8 +140,8 @@ const LoginComponent = () => {
             disabled={isSubmitting}
             onClick={() =>
               handleAdmin({
-                email: "groupleader@demo.com",
-                password: "Password@123",
+                email: "employee@gmail.com",
+                password: "Employee@123",
               })
             }
             className="text-xs font-medium py-2 rounded-full flex items-center justify-center text-[#C3C0D8] border border-[#2C293D] gap-2 cursor-pointer hover:bg-white/5 transition-colors"
