@@ -1,3 +1,5 @@
+import { SalesComponent } from "@/components/sales/SalesComponent";
+
 export default function SalesPage() {
-  return <h1>Sales</h1>;
+  return <SalesComponent />;
 }

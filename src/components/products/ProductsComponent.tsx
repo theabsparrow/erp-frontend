@@ -6,7 +6,15 @@ import {
   createColumnHelper,
 } from "@tanstack/react-table";
 import {
-  Plus, AlertCircle, Search, X, Eye, Pencil, Trash2, Loader2, Package,
+  Plus,
+  AlertCircle,
+  Search,
+  X,
+  Eye,
+  Pencil,
+  Trash2,
+  Loader2,
+  Package,
 } from "lucide-react";
 import { useGet } from "@/hooks/useGet";
 import { useMutate } from "@/hooks/useMutate";
@@ -14,7 +22,11 @@ import { CreateProductModal } from "./CreateProductModal";
 import { UpdateProductModal } from "./UpdateProductModal";
 import { ViewProductModal } from "./ViewProductModal";
 import { DeleteProductModal } from "./DeleteProductModal";
-import type { TProduct, TProductsResponse, TProductResponse } from "@/types/product.type";
+import type {
+  TProduct,
+  TProductsResponse,
+  TProductResponse,
+} from "@/types/product.type";
 import type { TCategoriesResponse, TCategory } from "@/types/category.type";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/utills/formatDate";
@@ -31,6 +43,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Link } from "react-router-dom";
 
 const LIMIT = 10;
 const col = createColumnHelper<TProduct>();
@@ -61,20 +74,18 @@ export function ProductsComponent() {
   const { data, isLoading, isError, error } = useGet<TProductsResponse>(
     ["products"],
     "/products",
-    { params: queryParams }
+    { params: queryParams },
   );
 
   // Fetch all categories for filter dropdown + modals (no pagination needed here)
   const { data: catData } = useGet<TCategoriesResponse>(
     ["categories-all"],
     "/categories",
-    { params: { limit: 999 } }
+    { params: { limit: 999 } },
   );
 
-  const { mutate: deleteProduct_, isPending: isDeleting } = useMutate<TProductResponse>(
-    "DELETE",
-    "/products",
-    {
+  const { mutate: deleteProduct_, isPending: isDeleting } =
+    useMutate<TProductResponse>("DELETE", "/products", {
       invalidateKeys: [["products"]],
       onSuccess: () => {
         toast.success("Product deleted successfully");
@@ -88,8 +99,7 @@ export function ProductsComponent() {
         toast.error(msg);
         setDeletingId(null);
       },
-    }
-  );
+    });
 
   function handleDeleteConfirm() {
     if (!deleteProduct) return;
@@ -121,10 +131,15 @@ export function ProductsComponent() {
   const categories: TCategory[] = catData?.data ?? [];
 
   function getPageNumbers(): (number | "ellipsis")[] {
-    if (totalPage <= 7) return Array.from({ length: totalPage }, (_, i) => i + 1);
+    if (totalPage <= 7)
+      return Array.from({ length: totalPage }, (_, i) => i + 1);
     const pages: (number | "ellipsis")[] = [1];
     if (page > 3) pages.push("ellipsis");
-    for (let i = Math.max(2, page - 1); i <= Math.min(totalPage - 1, page + 1); i++) {
+    for (
+      let i = Math.max(2, page - 1);
+      i <= Math.min(totalPage - 1, page + 1);
+      i++
+    ) {
       pages.push(i);
     }
     if (page < totalPage - 2) pages.push("ellipsis");
@@ -141,13 +156,20 @@ export function ProductsComponent() {
         return (
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center shrink-0 overflow-hidden">
-              {p.image
-                ? <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
-                : <Package size={14} className="text-slate-600" />
-              }
+              {p.image ? (
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Package size={14} className="text-slate-600" />
+              )}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-white truncate">{p.name}</p>
+              <p className="text-sm font-medium text-white truncate">
+                {p.name}
+              </p>
               <p className="text-xs text-slate-500 font-mono">{p.sku}</p>
             </div>
           </div>
@@ -158,31 +180,45 @@ export function ProductsComponent() {
       header: "Category",
       cell: (info) => {
         const cat = info.getValue();
-        return cat
-          ? <span className="px-2 py-0.5 rounded-md text-xs bg-violet-500/10 text-violet-300 border border-violet-500/20 capitalize">{cat.name}</span>
-          : <span className="text-slate-600 text-xs">—</span>;
+        return cat ? (
+          <span className="px-2 py-0.5 rounded-md text-xs bg-violet-500/10 text-violet-300 border border-violet-500/20 capitalize">
+            {cat.name}
+          </span>
+        ) : (
+          <span className="text-slate-600 text-xs">—</span>
+        );
       },
     }),
     col.accessor("purchasePrice", {
       header: "Buy",
-      cell: (info) => <span className="text-slate-400 text-sm">${info.getValue().toFixed(2)}</span>,
+      cell: (info) => (
+        <span className="text-slate-400 text-sm">
+          ${info.getValue().toFixed(2)}
+        </span>
+      ),
     }),
     col.accessor("sellingPrice", {
       header: "Sell",
-      cell: (info) => <span className="text-emerald-400 text-sm font-medium">${info.getValue().toFixed(2)}</span>,
+      cell: (info) => (
+        <span className="text-emerald-400 text-sm font-medium">
+          ${info.getValue().toFixed(2)}
+        </span>
+      ),
     }),
     col.accessor("stockQuantity", {
       header: "Stock",
       cell: (info) => {
         const qty = info.getValue();
         return (
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${
-            qty === 0
-              ? "bg-red-500/10 text-red-400 border-red-500/20"
-              : qty <= 10
-              ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-              : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-          }`}>
+          <span
+            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${
+              qty === 0
+                ? "bg-red-500/10 text-red-400 border-red-500/20"
+                : qty <= 10
+                  ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                  : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+            }`}
+          >
             {qty}
           </span>
         );
@@ -192,7 +228,11 @@ export function ProductsComponent() {
       header: "Created",
       cell: (info) => {
         const v = info.getValue();
-        return <span className="text-slate-500 text-xs whitespace-nowrap">{v ? formatDate(v) : "—"}</span>;
+        return (
+          <span className="text-slate-500 text-xs whitespace-nowrap">
+            {v ? formatDate(v) : "—"}
+          </span>
+        );
       },
     }),
     col.display({
@@ -203,17 +243,34 @@ export function ProductsComponent() {
         const isBeingDeleted = deletingId === product._id;
         return (
           <div className="flex items-center gap-1 justify-end">
-            <button onClick={() => setViewProduct(product)} className="p-1.5 rounded-lg text-slate-400 hover:text-sky-400 hover:bg-sky-500/10 transition-colors" title="View">
+            <Link
+              to={`/products/${product?._id}`}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-sky-400 hover:bg-sky-500/10 transition-colors"
+              title="View"
+            >
               <Eye size={14} />
-            </button>
+            </Link>
             {canUpdate && (
-              <button onClick={() => setEditProduct(product)} className="p-1.5 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" title="Edit">
+              <button
+                onClick={() => setEditProduct(product)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors"
+                title="Edit"
+              >
                 <Pencil size={14} />
               </button>
             )}
             {canDelete && (
-              <button onClick={() => setDeleteProduct(product)} disabled={isBeingDeleted} className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50" title="Delete">
-                {isBeingDeleted ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+              <button
+                onClick={() => setDeleteProduct(product)}
+                disabled={isBeingDeleted}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                title="Delete"
+              >
+                {isBeingDeleted ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <Trash2 size={14} />
+                )}
               </button>
             )}
           </div>
@@ -222,7 +279,11 @@ export function ProductsComponent() {
     }),
   ];
 
-  const table = useReactTable({ data: products, columns, getCoreRowModel: getCoreRowModel() });
+  const table = useReactTable({
+    data: products,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <div className="space-y-5">
@@ -230,7 +291,9 @@ export function ProductsComponent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-white">Products</h1>
-          <p className="text-sm text-slate-400 mt-0.5">Manage your product inventory</p>
+          <p className="text-sm text-slate-400 mt-0.5">
+            Manage your product inventory
+          </p>
         </div>
         {canCreate && (
           <button
@@ -259,7 +322,11 @@ export function ProductsComponent() {
           <div className="bg-[#0f0f13] border border-white/10 rounded-xl px-4 py-3">
             <p className="text-xs text-slate-500">Low Stock</p>
             <p className="text-2xl font-semibold text-amber-400 mt-0.5">
-              {products.filter((p) => p.stockQuantity > 0 && p.stockQuantity <= 10).length}
+              {
+                products.filter(
+                  (p) => p.stockQuantity > 0 && p.stockQuantity <= 10,
+                ).length
+              }
             </p>
           </div>
           <div className="bg-[#0f0f13] border border-white/10 rounded-xl px-4 py-3">
@@ -274,7 +341,10 @@ export function ProductsComponent() {
       {/* Search + Category filter */}
       <div className="flex flex-col sm:flex-row gap-3">
         <form onSubmit={handleSearch} className="flex-1 relative">
-          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+          <Search
+            size={14}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+          />
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -282,7 +352,11 @@ export function ProductsComponent() {
             className="w-full pl-9 pr-9 py-2.5 rounded-xl bg-[#0f0f13] border border-white/10 text-white placeholder:text-slate-500 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
           />
           {searchInput && (
-            <button type="button" onClick={clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+            >
               <X size={14} />
             </button>
           )}
@@ -293,9 +367,17 @@ export function ProductsComponent() {
           onChange={(e) => handleCategoryFilter(e.target.value)}
           className="sm:w-48 px-3.5 py-2.5 rounded-xl bg-[#0f0f13] border border-white/10 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all appearance-none text-white"
         >
-          <option value="" className="bg-[#0f0f13]">All Categories</option>
+          <option value="" className="bg-[#0f0f13]">
+            All Categories
+          </option>
           {categories.map((c) => (
-            <option key={c._id} value={c._id} className="bg-[#0f0f13] capitalize">{c.name}</option>
+            <option
+              key={c._id}
+              value={c._id}
+              className="bg-[#0f0f13] capitalize"
+            >
+              {c.name}
+            </option>
           ))}
         </select>
       </div>
@@ -305,7 +387,9 @@ export function ProductsComponent() {
         <div className="bg-[#0f0f13] border border-red-500/20 rounded-2xl p-6 flex items-center gap-3">
           <AlertCircle size={20} className="text-red-400 shrink-0" />
           <div>
-            <p className="text-white text-sm font-medium">Failed to load products</p>
+            <p className="text-white text-sm font-medium">
+              Failed to load products
+            </p>
             <p className="text-slate-400 text-xs mt-0.5">
               {error instanceof Error ? error.message : "Something went wrong"}
             </p>
@@ -319,7 +403,10 @@ export function ProductsComponent() {
           {isLoading ? (
             <div className="space-y-2 p-4">
               {[...Array(6)].map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full bg-white/5 rounded-xl" />
+                <Skeleton
+                  key={i}
+                  className="h-12 w-full bg-white/5 rounded-xl"
+                />
               ))}
             </div>
           ) : products.length === 0 ? (
@@ -327,9 +414,13 @@ export function ProductsComponent() {
               <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-4">
                 <Package size={24} className="text-slate-600" />
               </div>
-              <p className="text-slate-400 text-sm font-medium">No products found</p>
+              <p className="text-slate-400 text-sm font-medium">
+                No products found
+              </p>
               <p className="text-slate-600 text-xs mt-1">
-                {search || categoryFilter ? "Try adjusting your filters" : "Add your first product to get started"}
+                {search || categoryFilter
+                  ? "Try adjusting your filters"
+                  : "Add your first product to get started"}
               </p>
             </div>
           ) : (
@@ -337,10 +428,19 @@ export function ProductsComponent() {
               <table className="w-full text-sm">
                 <thead>
                   {table.getHeaderGroups().map((hg) => (
-                    <tr key={hg.id} className="border-b border-white/10 bg-white/[0.02]">
+                    <tr
+                      key={hg.id}
+                      className="border-b border-white/10 bg-white/2"
+                    >
                       {hg.headers.map((header) => (
-                        <th key={header.id} className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        <th
+                          key={header.id}
+                          className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap"
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                         </th>
                       ))}
                     </tr>
@@ -348,10 +448,16 @@ export function ProductsComponent() {
                 </thead>
                 <tbody>
                   {table.getRowModel().rows.map((row, i) => (
-                    <tr key={row.id} className={`border-b border-white/5 hover:bg-white/[0.03] transition-colors ${i % 2 === 0 ? "" : "bg-white/[0.02]"}`}>
+                    <tr
+                      key={row.id}
+                      className={`border-b border-white/5 hover:bg-white/3 transition-colors ${i % 2 === 0 ? "" : "bg-white/2"}`}
+                    >
                       {row.getVisibleCells().map((cell) => (
                         <td key={cell.id} className="px-4 py-3 align-middle">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
                         </td>
                       ))}
                     </tr>
@@ -372,26 +478,47 @@ export function ProductsComponent() {
                   <PaginationItem>
                     <PaginationPrevious
                       href="#"
-                      onClick={(e) => { e.preventDefault(); if (page > 1) setPage(page - 1); }}
-                      className={page === 1 ? "pointer-events-none opacity-40" : ""}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (page > 1) setPage(page - 1);
+                      }}
+                      className={
+                        page === 1 ? "pointer-events-none opacity-40" : ""
+                      }
                     />
                   </PaginationItem>
                   {getPageNumbers().map((p, i) =>
                     p === "ellipsis" ? (
-                      <PaginationItem key={`ellipsis-${i}`}><PaginationEllipsis /></PaginationItem>
+                      <PaginationItem key={`ellipsis-${i}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
                     ) : (
                       <PaginationItem key={p}>
-                        <PaginationLink href="#" isActive={p === page} onClick={(e) => { e.preventDefault(); setPage(p); }}>
+                        <PaginationLink
+                          href="#"
+                          isActive={p === page}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPage(p);
+                          }}
+                        >
                           {p}
                         </PaginationLink>
                       </PaginationItem>
-                    )
+                    ),
                   )}
                   <PaginationItem>
                     <PaginationNext
                       href="#"
-                      onClick={(e) => { e.preventDefault(); if (page < totalPage) setPage(page + 1); }}
-                      className={page === totalPage ? "pointer-events-none opacity-40" : ""}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (page < totalPage) setPage(page + 1);
+                      }}
+                      className={
+                        page === totalPage
+                          ? "pointer-events-none opacity-40"
+                          : ""
+                      }
                     />
                   </PaginationItem>
                 </PaginationContent>
@@ -402,9 +529,22 @@ export function ProductsComponent() {
       )}
 
       {/* Modals */}
-      <ViewProductModal open={!!viewProduct} product={viewProduct} onClose={() => setViewProduct(null)} />
-      <CreateProductModal open={createOpen} categories={categories} onClose={() => setCreateOpen(false)} />
-      <UpdateProductModal open={!!editProduct} product={editProduct} categories={categories} onClose={() => setEditProduct(null)} />
+      <ViewProductModal
+        open={!!viewProduct}
+        product={viewProduct}
+        onClose={() => setViewProduct(null)}
+      />
+      <CreateProductModal
+        open={createOpen}
+        categories={categories}
+        onClose={() => setCreateOpen(false)}
+      />
+      <UpdateProductModal
+        open={!!editProduct}
+        product={editProduct}
+        categories={categories}
+        onClose={() => setEditProduct(null)}
+      />
       <DeleteProductModal
         open={!!deleteProduct}
         product={deleteProduct}

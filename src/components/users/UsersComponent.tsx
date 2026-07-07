@@ -221,7 +221,6 @@ export function UsersComponent() {
             data={users}
             isLoading={isLoading}
             deletingId={deletingId}
-            onView={(u) => setViewUser(u)}
             onEdit={canUpdate ? (u) => setEditUser(u) : () => {}}
             onDelete={canDelete ? (u) => setDeleteUser(u) : () => {}}
           />

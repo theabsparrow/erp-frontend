@@ -5,7 +5,6 @@ import {
   TrendingUp,
   Users,
   Shield,
-  Lock,
   type LucideIcon,
   User2,
 } from "lucide-react";
@@ -26,5 +25,4 @@ export const navigationRoutes: NavRoute[] = [
   { title: "Sales", icon: TrendingUp, path: "/sales", permissions: ["view_sale"] },
   { title: "Users", icon: Users, path: "/users", permissions: ["view_user"] },
   { title: "Roles", icon: Shield, path: "/roles", permissions: ["view_role"] },
-  { title: "Permissions", icon: Lock, path: "/permissions", permissions: ["view_role"] },
 ];
