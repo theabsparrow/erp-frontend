@@ -1,3 +1,5 @@
+import { ProductsComponent } from "@/components/products/ProductsComponent";
+
 export default function ProductsPage() {
-  return <h1>Products</h1>;
+  return <ProductsComponent />;
 }

@@ -52,6 +52,18 @@ export async function apiDelete<TResponse>(
   return data;
 }
 
+export async function apiPostFormData<TResponse>(
+  route: string,
+  formData?: FormData,
+): Promise<TResponse> {
+  const { data } = await axiosInstance.post<TResponse>(
+    route,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } },
+  );
+  return data;
+}
+
 export async function apiPatchFormData<TResponse>(
   route: string,
   id?: string | number,
