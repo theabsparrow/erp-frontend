@@ -8,6 +8,7 @@ import { useLogin } from "@/hooks/useLogin";
 import { useAuth } from "@/provider/AuthProvider";
 import { saveAuth } from "@/lib/auth";
 import axios from "axios";
+import { config } from "@/config";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -114,8 +115,8 @@ const LoginComponent = () => {
             disabled={isSubmitting}
             onClick={() =>
               handleAdmin({
-                email: "admin@erp.com",
-                password: "Admin@123",
+                email: config.vite_admin_email as string,
+                password: config.vite_admin_pass as string,
               })
             }
             className="text-xs font-medium py-2 rounded-full flex items-center justify-center text-[#C3C0D8] border border-[#2C293D] gap-2 cursor-pointer hover:bg-white/5 transition-colors"
@@ -127,8 +128,8 @@ const LoginComponent = () => {
             disabled={isSubmitting}
             onClick={() =>
               handleAdmin({
-                email: "manager@gmail.com",
-                password: "Manager@123",
+                email: config.vite_manager_email as string,
+                password: config.vite_manager_pass as string,
               })
             }
             className="text-xs font-medium py-2 rounded-full flex items-center justify-center text-[#C3C0D8] border border-[#2C293D] gap-2 cursor-pointer hover:bg-white/5 transition-colors"
@@ -140,8 +141,8 @@ const LoginComponent = () => {
             disabled={isSubmitting}
             onClick={() =>
               handleAdmin({
-                email: "employee@gmail.com",
-                password: "Employee@123",
+                email: config.vite_employee_email as string,
+                password: config.vite_employee_pass as string,
               })
             }
             className="text-xs font-medium py-2 rounded-full flex items-center justify-center text-[#C3C0D8] border border-[#2C293D] gap-2 cursor-pointer hover:bg-white/5 transition-colors"
