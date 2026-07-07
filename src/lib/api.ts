@@ -25,7 +25,6 @@ export async function apiPost<TResponse, TBody = unknown>(
     buildUrl(route, id),
     body ?? {},
   );
-  console.log(data);
   return data;
 }
 

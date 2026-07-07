@@ -1,6 +1,8 @@
-import { useMutate } from "@/hooks/useMutate";
-import type { LoginPayload, LoginResponse } from "@/api/auth";
+import { useMutation } from "@tanstack/react-query";
+import { loginApi, type LoginPayload, type LoginResponse } from "@/api/auth";
 
 export function useLogin() {
-  return useMutate<LoginResponse, LoginPayload>("POST", "/auth/login");
+  return useMutation<LoginResponse, unknown, { body: LoginPayload }>({
+    mutationFn: ({ body }) => loginApi(body),
+  });
 }

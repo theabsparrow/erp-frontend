@@ -9,6 +9,7 @@ import { useAuth } from "@/provider/AuthProvider";
 import { saveAuth } from "@/lib/auth";
 import axios from "axios";
 import { config } from "@/config";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -21,7 +22,6 @@ const LoginComponent = () => {
   const navigate = useNavigate();
   const { setUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
 
   const { mutate: login, isPending } = useLogin();
 
@@ -34,59 +34,32 @@ const LoginComponent = () => {
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = (values: LoginFormValues) => {
-    setServerError(null);
+  function handleLogin(values: LoginFormValues) {
     login(
       { body: values },
       {
         onSuccess: (data) => {
+  
           const token = data?.data?.accessToken;
           if (token) {
             const user = saveAuth(token);
             setUser(user);
           }
-          navigate("/");
+          toast.success("Signed in successfully");
+          setTimeout(() => navigate("/"), 1000);
         },
         onError: (err) => {
-          if (axios.isAxiosError(err)) {
-            setServerError(
-              err.response?.data?.message ?? "Invalid email or password.",
-            );
-          } else {
-            setServerError("Something went wrong. Please try again.");
-          }
+          const msg = axios.isAxiosError(err)
+            ? (err.response?.data?.message ?? "Invalid email or password.")
+            : "Something went wrong. Please try again.";
+          toast.error(msg);
         },
-      },
+      }
     );
-  };
+  }
 
-  const handleAdmin = (values: LoginFormValues) => {
-    setServerError(null);
-    login(
-      { body: values },
-      {
-        onSuccess: (data) => {
-          const token = data?.data?.accessToken;
-          console.log(data);
-          if (token) {
-            const user = saveAuth(token);
-            setUser(user);
-          }
-          navigate("/");
-        },
-        onError: (err) => {
-          if (axios.isAxiosError(err)) {
-            console.log(err);
-            setServerError(
-              err.response?.data?.message ?? "Invalid email or password.",
-            );
-          } else {
-            setServerError("Something went wrong. Please try again.");
-          }
-        },
-      },
-    );
-  };
+  const onSubmit = (values: LoginFormValues) => handleLogin(values);
+  const handleAdmin = (values: LoginFormValues) => handleLogin(values);
   return (
     <div className="w-full max-w-md">
       {/* Card */}
@@ -101,13 +74,6 @@ const LoginComponent = () => {
             Sign in to your ERP account
           </p>
         </div>
-
-        {/* Server error */}
-        {serverError && (
-          <div className="mb-5 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-            {serverError}
-          </div>
-        )}
 
         <div className="grid grid-cols-3 gap-2">
           <button

@@ -3,6 +3,8 @@ export interface ProfileResponse {
     _id: string;
     name: string;
     email: string;
+    phone?: string;
+    profilePicture?: string;
     role: {
       _id: string;
       name: string;
