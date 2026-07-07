@@ -82,7 +82,7 @@ export function ViewUserModal({ open, user, onClose }: Props) {
           </div>
 
           {/* Info rows */}
-          <div className="bg-white/[0.02] rounded-xl border border-white/8 px-4">
+          <div className="bg-white/2 rounded-xl border border-white/8 px-4">
             <InfoRow icon={Mail} label="Email" value={user.email} />
             <InfoRow icon={Phone} label="Phone" value={user.phone} />
             <InfoRow
