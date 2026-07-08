@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -8,7 +9,6 @@ import { useGet } from "@/hooks/useGet";
 import { apiPatchFormData } from "@/lib/api";
 import type { TUserResponse } from "@/types/user.type";
 import type { TRolesResponse, TRole } from "@/types/role.type";
-import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/utills/formatDate";
 import { useAuth } from "@/provider/AuthProvider";
 import { PERMISSIONS } from "@/constants/permissions";
@@ -29,6 +29,10 @@ import {
   User,
   X,
 } from "lucide-react";
+import { DetailsSkeleton } from "./DetailsSkeleton";
+import { getInitials } from "@/utills/getInitial";
+import { InfoRow } from "./InRow";
+import { Field } from "./Field";
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 const schema = z.object({
@@ -44,72 +48,6 @@ type FormValues = z.infer<typeof schema>;
 const inputCls =
   "w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all";
 
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <label className="text-sm font-medium text-slate-300">{label}</label>
-      {children}
-      {error && <p className="text-xs text-red-400">{error}</p>}
-    </div>
-  );
-}
-
-function InfoRow({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start gap-3 py-3 border-b border-white/5 last:border-0">
-      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center shrink-0 mt-0.5">
-        <Icon size={13} className="text-slate-400" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-xs text-slate-500">{label}</p>
-        <div className="text-sm text-white mt-0.5 break-words">{value}</div>
-      </div>
-    </div>
-  );
-}
-
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
-
-// ── Skeleton ──────────────────────────────────────────────────────────────────
-function DetailsSkeleton() {
-  return (
-    <div className="space-y-5">
-      <Skeleton className="h-8 w-48 bg-white/5 rounded-xl" />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <Skeleton className="h-56 bg-white/5 rounded-2xl" />
-        <div className="lg:col-span-2 space-y-4">
-          <Skeleton className="h-48 bg-white/5 rounded-2xl" />
-          <Skeleton className="h-32 bg-white/5 rounded-2xl" />
-        </div>
-      </div>
-      <Skeleton className="h-64 bg-white/5 rounded-2xl" />
-    </div>
-  );
-}
-
 // ── Main ──────────────────────────────────────────────────────────────────────
 export function UserDetailsComponent() {
   const { id } = useParams<{ id: string }>();
@@ -124,7 +62,7 @@ export function UserDetailsComponent() {
   const { data, isLoading, isError } = useGet<TUserResponse>(
     ["user", id],
     `/users/${id}`,
-    { enabled: !!id }
+    { enabled: !!id },
   );
 
   // ── Fetch roles ──

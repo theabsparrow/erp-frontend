@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm, type Resolver } from "react-hook-form";
@@ -79,7 +80,7 @@ function InfoRow({
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-xs text-slate-500">{label}</p>
-        <div className="text-sm text-white mt-0.5 break-words">{value}</div>
+        <div className="text-sm text-white mt-0.5 wrap-break-word">{value}</div>
       </div>
     </div>
   );
@@ -272,6 +273,7 @@ export function ProductDetailsComponent() {
 
   return (
     <div className="space-y-5">
+      
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
@@ -316,7 +318,7 @@ export function ProductDetailsComponent() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Image + info rows */}
         <div className="lg:col-span-2 bg-[#0f0f13] border border-white/10 rounded-2xl overflow-hidden">
-          <div className="w-full h-48 sm:h-64 bg-white/[0.02] border-b border-white/10 flex items-center justify-center overflow-hidden">
+          <div className="w-full h-48 sm:h-64 bg-white/2 border-b border-white/10 flex items-center justify-center overflow-hidden">
             {imageSrc ? (
               <img
                 src={imageSrc}
@@ -348,7 +350,7 @@ export function ProductDetailsComponent() {
               </span>
             </div>
 
-            <div className="bg-white/[0.02] rounded-xl border border-white/8 px-4">
+            <div className="bg-white/2 rounded-xl border border-white/8 px-4">
               <InfoRow
                 icon={FolderOpen}
                 label="Category"

@@ -22,7 +22,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label:
       </div>
       <div className="min-w-0">
         <p className="text-xs text-slate-500">{label}</p>
-        <div className="text-sm text-white mt-0.5 break-words">{value}</div>
+        <div className="text-sm text-white mt-0.5 wrap-break-word">{value}</div>
       </div>
     </div>
   );
@@ -72,7 +72,7 @@ export function ViewProductModal({ open, product, onClose }: Props) {
             </div>
           </div>
 
-          <div className="bg-white/[0.02] rounded-xl border border-white/8 px-4">
+          <div className="bg-white/2 rounded-xl border border-white/8 px-4">
             <InfoRow icon={FolderOpen} label="Category" value={
               product.category
                 ? <span className="capitalize">{product.category.name}</span>
